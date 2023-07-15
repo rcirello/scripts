@@ -47,8 +47,7 @@ echo "Checking ${#CONNECTIONS_TO_CHECK[@]} connections:"
 for connection in ${CONNECTIONS_TO_CHECK[@]}
 do
   fn_PrintLine "${INF}" "${W}${connection}${RST}."
-  connection_test=$(timeout ${CONNECTION_TIMEOUT} curl -v telnet://${connection} 2>&1)
-  echo ${connection_test} | grep -qi "connected to $(echo ${connection} | cut -d ':' -f1).*port $(echo ${connection} | cut -d':' -f2)"
+  connection_test=$(timeout ${CONNECTION_TIMEOUT} bash -c "echo > /dev/tcp/$(echo ${connection} | cut -d ':' -f1)/$(echo ${connection} | cut -d':' -f2)"  2>&1)
   error_code=${?}
   OVERALL_ERROR_CODE=$(( $OVERALL_ERROR_CODE + $error_code ))
   fn_PrintLine "$(fn_ExecStatus ${error_code})" "${W}${connection}${RST}."
